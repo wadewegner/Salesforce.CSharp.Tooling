@@ -34,7 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Models\Field.cs" />
+    <Compile Include="Models\SObject.cs" />
+    <Compile Include="Models\SObjectDescribeModel.cs" />
+    <Compile Include="Models\SObjectModel.cs" />
+    <Compile Include="Models\SObjectsModel.cs" />
+    <Compile Include="Models\SupportedScope.cs" />
+    <Compile Include="Models\Urls.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolingClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -53,9 +61,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
