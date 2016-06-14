@@ -105,7 +105,167 @@ namespace Salesforce.Tooling.APIs.Tests
             Assert.IsNotNull(createObjectResult.Success);
             Assert.AreEqual(createObjectResult.Success, true);
             Assert.IsNotNull(createObjectResult.Errors);
+        }
+
+        [Test]
+        public async Task DescribeApexClass()
+        {
+            var traceFlagDescribeResult = await _toolingClient.SObjectDescribe("ApexClass");
+            Assert.IsNotNull(traceFlagDescribeResult);
+        }
+
+        [Test]
+        public async Task QueryApexClass()
+        {
+            const string query = "SELECT Id, NamespacePrefix, Name, ApiVersion, Status, IsValid, BodyCrc, Body, LengthWithoutComments, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, SymbolTable, Metadata, FullName FROM ApexClass";
+            var result = await _toolingClient.Query<dynamic>(query);
+
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task QueryAuraDefinition()
+        {
+            const string query = "SELECT AuraDefinitionBundleId, DefType, Format, Source FROM AuraDefinition";
+            var result = await _toolingClient.Query<dynamic>(query);
+
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task QueryAuraDefinitionBundle()
+        {
+            const string query = "SELECT ApiVersion, Description, DeveloperName, Language, MasterLabel, NamespacePrefix FROM AuraDefinitionBundle";
+            var result = await _toolingClient.Query<dynamic>(query);
+
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public async Task CreateApexClass()
+        {
+            var ticks = DateTime.Now.Ticks;
+            var apexClassName = "ac" + ticks;
+
+            var apexClass = new ApexClass
+            {
+                Body = string.Format("public class {0} {{\n\n}}", apexClassName),
+                Name = "n" + ticks
+            };
+
+            var createApexClassResult = await _toolingClient.CreateRecord("ApexClass", apexClass);
+            Assert.IsNotNull(createApexClassResult);
+
+            var apexClassResult = await _toolingClient.SObject("ApexClass", createApexClassResult.Id);
+            Assert.IsNotNull(apexClassResult);
+        }
+
+        [Test]
+        public async Task CreateApexClassAndUpdateWithMetadataContainer()
+        {
+            var ticks = DateTime.Now.Ticks;
+            var apexClassName = "ac" + ticks;
+
+            var apexClass = new ApexClass
+            {
+                Body = string.Format("public class {0} {{\n\n}}", apexClassName),
+                Name = "n" + ticks
+            };
+
+            var createApexClassResult = await _toolingClient.CreateRecord("ApexClass", apexClass);
+            Assert.IsNotNull(createApexClassResult);
+
+            // only 32 charactgers
+            var metadataContainerName = "mc" + ticks;
+            var metadataContainer = new MetadataContainer
+            {
+                Name = metadataContainerName
+            };
+
+            var createMetadataContainerResult = await _toolingClient.CreateRecord("MetadataContainer", metadataContainer);
+
+            Assert.IsNotNull(createMetadataContainerResult);
+            Assert.IsNotNull(createApexClassResult.Id);
+
+            var apexClassMember = new ApexClassMember
+            {
+                MetadataContainerId = createMetadataContainerResult.Id,
+                ContentEntityId = createApexClassResult.Id,
+                Body = string.Format("public class {0} {{\n\n}}", apexClassName),
+//                Metadata = @"<ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
+//<apiVersion>36.0</apiVersion>
+//<status>Active</status>
+//</ApexClass>"
+            };
+
+            var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
+
+            Assert.IsNotNull(createApexClassMemberResult);
+            Assert.IsNotNull(createApexClassMemberResult.Id);
+
+            // ContainerAsyncRequest
 
         }
+
+        [Test]
+        public async Task CreateApexClassWithMetadataContainer()
+        {
+            var ticks = DateTime.Now.Ticks;
+            var apexClassName = "ac" + ticks;
+
+            // only 32 charactgers
+            var metadataContainerName = "mc" + ticks;
+            var metadataContainer = new MetadataContainer
+            {
+                Name = metadataContainerName
+            };
+
+            var createMetadataContainerResult = await _toolingClient.CreateRecord("MetadataContainer", metadataContainer);
+
+            Assert.IsNotNull(createMetadataContainerResult);
+
+            var apexClassMember = new ApexClassMember
+            {
+                MetadataContainerId = createMetadataContainerResult.Id,
+                FullName = "fn" + ticks,
+                Body = string.Format("public class {0} {{\n\n}}", apexClassName),
+                //                Metadata = @"<ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
+                //<apiVersion>36.0</apiVersion>
+                //<status>Active</status>
+                //</ApexClass>"
+            };
+
+            var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
+
+            Assert.IsNotNull(createApexClassMemberResult);
+            Assert.IsNotNull(createApexClassMemberResult.Id);
+
+            // ContainerAsyncRequest
+
+        }
+
+        public class MetadataContainer
+        {
+            public string Name;
+        }
+
+        public class ApexClass
+        {
+            public string Name;
+            public string Body;
+        }
+
+        public class ApexClassMember
+        {
+            public string Body;
+            //public string Content;
+            public string ContentEntityId;
+            public string FullName;
+            //public DateTime LastSyncDate;
+            //public object Metadata;
+            public object MetadataContainerId;
+            //public object SymbolTable;
+        }
+
     }
 }

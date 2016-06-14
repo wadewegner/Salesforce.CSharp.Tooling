@@ -68,6 +68,14 @@ namespace Salesforce.Tooling.APIs
             return result;
         }
 
+        public async Task<SObjectModel> SObject(string sObject, string id)
+        {
+            var uri = new Uri(ToolingApiUri, string.Format("sobjects/{0}/{1}", sObject, id));
+            var result = await HttpGetAsync<SObjectModel>(uri);
+
+            return result;
+        }
+
         public async Task<SObjectDescribeModel> SObjectDescribe(string sObject)
         {
             var uri = new Uri(ToolingApiUri, string.Format("sobjects/{0}/describe", sObject));
@@ -80,6 +88,14 @@ namespace Salesforce.Tooling.APIs
         {
             var uri = new Uri(ToolingApiUri, string.Format("sobjects/{0}", sObjectName));
             var result = await HttpPostAsync<SuccessResponse>(uri, record);
+
+            return result;
+        }
+
+        public async Task<T> Query<T>(string query)
+        {
+            var uri = new Uri(ToolingApiUri, string.Format("query/?q={0}", query));
+            var result = await HttpGetAsync<T>(uri);
 
             return result;
         }
