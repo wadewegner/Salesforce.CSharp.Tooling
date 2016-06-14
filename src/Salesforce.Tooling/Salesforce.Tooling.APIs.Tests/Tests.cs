@@ -229,10 +229,11 @@ namespace Salesforce.Tooling.APIs.Tests
                 MetadataContainerId = createMetadataContainerResult.Id,
                 FullName = "fn" + ticks,
                 Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-                //                Metadata = @"<ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
-                //<apiVersion>36.0</apiVersion>
-                //<status>Active</status>
-                //</ApexClass>"
+                Content = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
+    <apiVersion>36.0</apiVersion>
+    <status>Active</status>
+</ApexClass>"
             };
 
             var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
@@ -243,6 +244,9 @@ namespace Salesforce.Tooling.APIs.Tests
             // ContainerAsyncRequest
 
         }
+
+        public class MetadataResult
+        { }
 
         public class MetadataContainer
         {
@@ -258,11 +262,11 @@ namespace Salesforce.Tooling.APIs.Tests
         public class ApexClassMember
         {
             public string Body;
-            //public string Content;
+            public string Content;
             public string ContentEntityId;
             public string FullName;
             //public DateTime LastSyncDate;
-            //public object Metadata;
+            public object Metadata;
             public object MetadataContainerId;
             //public object SymbolTable;
         }
