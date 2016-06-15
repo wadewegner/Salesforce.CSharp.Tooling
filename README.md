@@ -10,7 +10,7 @@ Below you'll find some sample codes for using this library. You can also [review
 
 This uses the DeveloperForce.Force library for authentication.
 
-```cscharp
+```csharp
 var auth = new AuthenticationClient();
 var auth.UsernamePasswordAsync(ConsumerKey, ConsumerSecret, Username, Password, TokenRequestEndpointUrl).Wait();
 ```
