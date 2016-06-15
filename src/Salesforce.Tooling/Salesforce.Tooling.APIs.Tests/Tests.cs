@@ -148,7 +148,7 @@ namespace Salesforce.Tooling.APIs.Tests
             var ticks = DateTime.Now.Ticks;
             var apexClassName = "ac" + ticks;
 
-            var apexClass = new ApexClass
+            var apexClass = new Models.ApexClass
             {
                 Body = string.Format("public class {0} {{\n\n}}", apexClassName),
                 Name = "n" + ticks
@@ -167,7 +167,7 @@ namespace Salesforce.Tooling.APIs.Tests
             var ticks = DateTime.Now.Ticks;
             var apexClassName = "ac" + ticks;
 
-            var apexClass = new ApexClass
+            var apexClass = new Models.ApexClass
             {
                 Body = string.Format("public class {0} {{\n\n}}", apexClassName),
                 Name = "n" + ticks
@@ -217,16 +217,14 @@ namespace Salesforce.Tooling.APIs.Tests
             var createMetadataContainerResult = await _toolingClient.CreateRecord("MetadataContainer", metadataContainer);
             Assert.IsNotNull(createMetadataContainerResult);
 
+            var apexClass = new ApexClass {apiVersion = "36.0", status = "Active"};
+
             var apexClassMember = new ApexClassMember
             {
                 MetadataContainerId = createMetadataContainerResult.Id,
                 FullName = "fn" + ticks,
                 Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-                Metadata = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
-    <apiVersion>36.0</apiVersion>
-    <status>Active</status>
-</ApexClass>"
+                Metadata = apexClass
             };
 
             var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
@@ -237,5 +235,11 @@ namespace Salesforce.Tooling.APIs.Tests
             // ContainerAsyncRequest
             // TBD
         }
+    }
+
+    public class ApexClass
+    {
+        public string apiVersion;
+        public string status;
     }
 }
