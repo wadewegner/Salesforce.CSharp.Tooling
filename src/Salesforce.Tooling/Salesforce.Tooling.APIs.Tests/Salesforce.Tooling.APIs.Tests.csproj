@@ -57,11 +57,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AllComponentMessage.cs" />
+    <Compile Include="Models\Attributes.cs" />
+    <Compile Include="Models\ComponentSuccess.cs" />
     <Compile Include="Models\ContainerAsyncRequest.cs" />
     <Compile Include="Models\ApexClassMemberMetadata.cs" />
     <Compile Include="Models\ApexClass.cs" />
     <Compile Include="Models\ApexClassMember.cs" />
+    <Compile Include="Models\DeployDetails.cs" />
     <Compile Include="Models\MetadataContainer.cs" />
+    <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

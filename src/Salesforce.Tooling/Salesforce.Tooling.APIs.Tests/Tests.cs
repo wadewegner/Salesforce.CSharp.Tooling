@@ -198,6 +198,22 @@ namespace Salesforce.Tooling.APIs.Tests
 
             var containerAsyncRequestResult = await _toolingClient.CreateRecord("ContainerAsyncRequest", containerAsyncRequest);
             Assert.IsNotNull(containerAsyncRequestResult);
+
+            var state = "Queued";
+            QueryResult<ContainerAsyncRequest> result = null;
+
+            while (state == "Queued")
+            {
+                var query = string.Format("SELECT Id, DeployDetails, ErrorMsg, IsCheckOnly, IsRunTests, MetadataContainerId, MetadataContainerMemberId, State FROM ContainerAsyncRequest WHERE Id = '{0}'", containerAsyncRequestResult.Id);
+                result = await _toolingClient.Query<QueryResult<ContainerAsyncRequest>>(query);
+
+                state = result.records[0].State;
+
+                Assert.IsNotNull(result);
+            }
+
+            Assert.AreEqual(null, result.records[0].ErrorMsg);
+            Assert.AreEqual(true, result.records[0].DeployDetails.allComponentMessages[0].created);
         }
     }
 }
