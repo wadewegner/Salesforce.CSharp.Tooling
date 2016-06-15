@@ -111,14 +111,14 @@ namespace Salesforce.Tooling.APIs.Tests
         [Test]
         public async Task DescribeApexClass()
         {
-            var traceFlagDescribeResult = await _toolingClient.SObjectDescribe("ApexClass");
+            var traceFlagDescribeResult = await _toolingClient.SObjectDescribe("ApexClassMemberMetadata");
             Assert.IsNotNull(traceFlagDescribeResult);
         }
 
         [Test]
         public async Task QueryApexClass()
         {
-            const string query = "SELECT Id, NamespacePrefix, Name, ApiVersion, Status, IsValid, BodyCrc, Body, LengthWithoutComments, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, SymbolTable, Metadata, FullName FROM ApexClass";
+            const string query = "SELECT Id, NamespacePrefix, Name, ApiVersion, Status, IsValid, BodyCrc, Body, LengthWithoutComments, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, SymbolTable, Metadata, FullName FROM ApexClassMemberMetadata";
             var result = await _toolingClient.Query<dynamic>(query);
 
             Assert.IsNotNull(result);
@@ -154,10 +154,10 @@ namespace Salesforce.Tooling.APIs.Tests
                 Name = "n" + ticks
             };
 
-            var createApexClassResult = await _toolingClient.CreateRecord("ApexClass", apexClass);
+            var createApexClassResult = await _toolingClient.CreateRecord("ApexClassMemberMetadata", apexClass);
             Assert.IsNotNull(createApexClassResult);
 
-            var apexClassResult = await _toolingClient.SObject("ApexClass", createApexClassResult.Id);
+            var apexClassResult = await _toolingClient.SObject("ApexClassMemberMetadata", createApexClassResult.Id);
             Assert.IsNotNull(apexClassResult);
         }
 
@@ -173,7 +173,7 @@ namespace Salesforce.Tooling.APIs.Tests
                 Name = "n" + ticks
             };
 
-            var createApexClassResult = await _toolingClient.CreateRecord("ApexClass", apexClass);
+            var createApexClassResult = await _toolingClient.CreateRecord("ApexClassMemberMetadata", apexClass);
             Assert.IsNotNull(createApexClassResult);
 
             var metadataContainerName = "mc" + ticks;
@@ -217,14 +217,12 @@ namespace Salesforce.Tooling.APIs.Tests
             var createMetadataContainerResult = await _toolingClient.CreateRecord("MetadataContainer", metadataContainer);
             Assert.IsNotNull(createMetadataContainerResult);
 
-            var apexClass = new ApexClass {apiVersion = "36.0", status = "Active"};
-
             var apexClassMember = new ApexClassMember
             {
                 MetadataContainerId = createMetadataContainerResult.Id,
                 FullName = "fn" + ticks,
                 Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-                Metadata = apexClass
+                Metadata = new ApexClassMemberMetadata {apiVersion = "36.0", status = "Active"}
             };
 
             var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
@@ -235,11 +233,5 @@ namespace Salesforce.Tooling.APIs.Tests
             // ContainerAsyncRequest
             // TBD
         }
-    }
-
-    public class ApexClass
-    {
-        public string apiVersion;
-        public string status;
     }
 }
