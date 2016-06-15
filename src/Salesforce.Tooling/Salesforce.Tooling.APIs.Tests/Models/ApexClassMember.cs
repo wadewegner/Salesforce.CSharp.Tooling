@@ -6,9 +6,7 @@
         public string Content;
         public string ContentEntityId;
         public string FullName;
-        //public DateTime LastSyncDate;
         public object Metadata;
         public object MetadataContainerId;
-        //public object SymbolTable;
     }
 }

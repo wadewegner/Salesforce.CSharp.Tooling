@@ -1,4 +1,4 @@
-namespace Salesforce.Tooling.APIs.Tests
+namespace Salesforce.Tooling.APIs.Tests.Models
 {
     public class ApexClassMemberMetadata
     {

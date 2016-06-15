@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Dynamic;
 using System.Net;
+using System.Runtime.Remoting.Channels;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Salesforce.Common;
@@ -154,52 +155,11 @@ namespace Salesforce.Tooling.APIs.Tests
                 Name = "n" + ticks
             };
 
-            var createApexClassResult = await _toolingClient.CreateRecord("ApexClassMemberMetadata", apexClass);
+            var createApexClassResult = await _toolingClient.CreateRecord("ApexClass", apexClass);
             Assert.IsNotNull(createApexClassResult);
 
-            var apexClassResult = await _toolingClient.SObject("ApexClassMemberMetadata", createApexClassResult.Id);
+            var apexClassResult = await _toolingClient.SObject("ApexClass", createApexClassResult.Id);
             Assert.IsNotNull(apexClassResult);
-        }
-
-        [Test]
-        public async Task CreateApexClassAndUpdateWithMetadataContainer()
-        {
-            var ticks = DateTime.Now.Ticks;
-            var apexClassName = "ac" + ticks;
-
-            var apexClass = new Models.ApexClass
-            {
-                Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-                Name = "n" + ticks
-            };
-
-            var createApexClassResult = await _toolingClient.CreateRecord("ApexClassMemberMetadata", apexClass);
-            Assert.IsNotNull(createApexClassResult);
-
-            var metadataContainerName = "mc" + ticks;
-            var metadataContainer = new MetadataContainer
-            {
-                Name = metadataContainerName
-            };
-
-            var createMetadataContainerResult = await _toolingClient.CreateRecord("MetadataContainer", metadataContainer);
-
-            Assert.IsNotNull(createMetadataContainerResult);
-            Assert.IsNotNull(createApexClassResult.Id);
-
-            var apexClassMember = new ApexClassMember
-            {
-                MetadataContainerId = createMetadataContainerResult.Id,
-                ContentEntityId = createApexClassResult.Id,
-                Body = string.Format("public class {0} {{\n\n}}", apexClassName)
-            };
-
-            var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
-
-            Assert.IsNotNull(createApexClassMemberResult);
-            Assert.IsNotNull(createApexClassMemberResult.Id);
-
-            // ContainerAsyncRequest
         }
 
         [Test]
@@ -230,8 +190,14 @@ namespace Salesforce.Tooling.APIs.Tests
             Assert.IsNotNull(createApexClassMemberResult);
             Assert.IsNotNull(createApexClassMemberResult.Id);
 
-            // ContainerAsyncRequest
-            // TBD
+            var containerAsyncRequest = new ContainerAsyncRequest
+            {
+                MetadataContainerId = createMetadataContainerResult.Id,
+                IsCheckOnly = true
+            };
+
+            var containerAsyncRequestResult = await _toolingClient.CreateRecord("ContainerAsyncRequest", containerAsyncRequest);
+            Assert.IsNotNull(containerAsyncRequestResult);
         }
     }
 }

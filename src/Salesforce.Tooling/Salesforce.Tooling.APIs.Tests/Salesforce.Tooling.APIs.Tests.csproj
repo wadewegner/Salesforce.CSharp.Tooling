@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ContainerAsyncRequest.cs" />
     <Compile Include="Models\ApexClassMemberMetadata.cs" />
     <Compile Include="Models\ApexClass.cs" />
     <Compile Include="Models\ApexClassMember.cs" />
