@@ -112,14 +112,14 @@ namespace Salesforce.Tooling.APIs.Tests
         [Test]
         public async Task DescribeApexClass()
         {
-            var traceFlagDescribeResult = await _toolingClient.SObjectDescribe("ApexClassMemberMetadata");
-            Assert.IsNotNull(traceFlagDescribeResult);
+            var apexClassDescribeResult = await _toolingClient.SObjectDescribe("ApexClass");
+            Assert.IsNotNull(apexClassDescribeResult);
         }
 
         [Test]
         public async Task QueryApexClass()
         {
-            const string query = "SELECT Id, NamespacePrefix, Name, ApiVersion, Status, IsValid, BodyCrc, Body, LengthWithoutComments, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, SymbolTable, Metadata, FullName FROM ApexClassMemberMetadata";
+            const string query = "SELECT Id, NamespacePrefix, Name, ApiVersion, Status, IsValid, BodyCrc, Body, LengthWithoutComments, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, SymbolTable FROM ApexClass";
             var result = await _toolingClient.Query<dynamic>(query);
 
             Assert.IsNotNull(result);
@@ -208,7 +208,6 @@ namespace Salesforce.Tooling.APIs.Tests
                 result = await _toolingClient.Query<QueryResult<ContainerAsyncRequest>>(query);
 
                 state = result.records[0].State;
-
                 Assert.IsNotNull(result);
             }
 
