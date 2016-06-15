@@ -12,7 +12,7 @@ This uses the DeveloperForce.Force library for authentication.
 
 ```csharp
 var auth = new AuthenticationClient();
-var auth.UsernamePasswordAsync(ConsumerKey, ConsumerSecret, Username, Password, TokenRequestEndpointUrl).Wait();
+await auth.UsernamePasswordAsync(ConsumerKey, ConsumerSecret, Username, Password, TokenRequestEndpointUrl);
 ```
 
 ### Get all sObjects
@@ -28,7 +28,7 @@ var sObjectsResults = await toolingClient.SObjects<SObjectsModel>();
 var traceFlagResult = await toolingClient.SObject("ApexClass");
 ```
 
-### Describe a specific sObject
+### Describe a specific sObject (e.g. ApexClass)
 
 ```csharp
 var apexClassDescribeResult = await toolingClient.SObjectDescribe("ApexClass");
@@ -45,13 +45,11 @@ var result = await toolingClient.Query<dynamic>(query);
 ### Create an ApexClass
 
 ```csharp
-var ticks = DateTime.Now.Ticks;
-var apexClassName = "ac" + ticks;
 
 var apexClass = new Models.ApexClass
 {
-  Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-  Name = "n" + ticks
+  Body = "public class TestClass {{\n\n}}",
+  Name = "TestClassName"
 };
 
 var createApexClassResult = await toolingClient.CreateRecord("ApexClass", apexClass);
@@ -60,10 +58,6 @@ var createApexClassResult = await toolingClient.CreateRecord("ApexClass", apexCl
 ### Create an ApexClass using MetadataContainer
 
 ```csharp
-var ticks = DateTime.Now.Ticks;
-var apexClassName = "ac" + ticks;
-var metadataContainerName = "mc" + ticks;
-
 var metadataContainer = new MetadataContainer
 {
     Name = metadataContainerName
@@ -74,8 +68,8 @@ var createMetadataContainerResult = await toolingClient.CreateRecord("MetadataCo
 var apexClassMember = new ApexClassMember
 {
   MetadataContainerId = createMetadataContainerResult.Id,
-  FullName = "fn" + ticks,
-  Body = string.Format("public class {0} {{\n\n}}", apexClassName),
+  FullName = "TestClass",
+  Body = "public class TestClass {{\n\n}}",
   Metadata = new ApexClassMemberMetadata {apiVersion = "36.0", status = "Active"}
 };
 
