@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Salesforce.Common;
 using Salesforce.Tooling.APIs.Models;
+using Salesforce.Tooling.APIs.Tests.Models;
 
 namespace Salesforce.Tooling.APIs.Tests
 {
@@ -175,7 +176,6 @@ namespace Salesforce.Tooling.APIs.Tests
             var createApexClassResult = await _toolingClient.CreateRecord("ApexClass", apexClass);
             Assert.IsNotNull(createApexClassResult);
 
-            // only 32 charactgers
             var metadataContainerName = "mc" + ticks;
             var metadataContainer = new MetadataContainer
             {
@@ -191,11 +191,7 @@ namespace Salesforce.Tooling.APIs.Tests
             {
                 MetadataContainerId = createMetadataContainerResult.Id,
                 ContentEntityId = createApexClassResult.Id,
-                Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-//                Metadata = @"<ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
-//<apiVersion>36.0</apiVersion>
-//<status>Active</status>
-//</ApexClass>"
+                Body = string.Format("public class {0} {{\n\n}}", apexClassName)
             };
 
             var createApexClassMemberResult = await _toolingClient.CreateRecord("ApexClassMember", apexClassMember);
@@ -204,7 +200,6 @@ namespace Salesforce.Tooling.APIs.Tests
             Assert.IsNotNull(createApexClassMemberResult.Id);
 
             // ContainerAsyncRequest
-
         }
 
         [Test]
@@ -212,16 +207,14 @@ namespace Salesforce.Tooling.APIs.Tests
         {
             var ticks = DateTime.Now.Ticks;
             var apexClassName = "ac" + ticks;
-
-            // only 32 charactgers
             var metadataContainerName = "mc" + ticks;
+
             var metadataContainer = new MetadataContainer
             {
                 Name = metadataContainerName
             };
 
             var createMetadataContainerResult = await _toolingClient.CreateRecord("MetadataContainer", metadataContainer);
-
             Assert.IsNotNull(createMetadataContainerResult);
 
             var apexClassMember = new ApexClassMember
@@ -229,7 +222,7 @@ namespace Salesforce.Tooling.APIs.Tests
                 MetadataContainerId = createMetadataContainerResult.Id,
                 FullName = "fn" + ticks,
                 Body = string.Format("public class {0} {{\n\n}}", apexClassName),
-                Content = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+                Metadata = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <ApexClass xmlns=""http://soap.sforce.com/2006/04/metadata"">
     <apiVersion>36.0</apiVersion>
     <status>Active</status>
@@ -242,34 +235,7 @@ namespace Salesforce.Tooling.APIs.Tests
             Assert.IsNotNull(createApexClassMemberResult.Id);
 
             // ContainerAsyncRequest
-
+            // TBD
         }
-
-        public class MetadataResult
-        { }
-
-        public class MetadataContainer
-        {
-            public string Name;
-        }
-
-        public class ApexClass
-        {
-            public string Name;
-            public string Body;
-        }
-
-        public class ApexClassMember
-        {
-            public string Body;
-            public string Content;
-            public string ContentEntityId;
-            public string FullName;
-            //public DateTime LastSyncDate;
-            public object Metadata;
-            public object MetadataContainerId;
-            //public object SymbolTable;
-        }
-
     }
 }
